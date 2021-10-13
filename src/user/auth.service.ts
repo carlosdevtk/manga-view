@@ -22,7 +22,9 @@ export class AuthService {
   }
 
   async getCurrentUser(jwt: string) {
-    if (!this.isValidJwt(jwt))
+    const isValid = await this.isValidJwt(jwt);
+
+    if (!isValid)
       throw new UnauthorizedException('Faça o login para continuar');
 
     const data = await this.jwtService.verifyAsync(jwt);
