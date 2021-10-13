@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { AuthorService } from './author.service';
 import { CreateAuthorDto } from './dtos/createAuthor.dto';
 
@@ -19,5 +27,18 @@ export class AuthorController {
   @Get('/author/:name')
   async showAuthor(@Param('name') name: string) {
     return this.authorService.findByName(name);
+  }
+
+  @Patch('/author/:authorName')
+  async updateAuthor(
+    @Param('authorName') authorName: string,
+    @Body() dto: { name: string },
+  ) {
+    return this.authorService.updateAuthor(authorName, dto.name);
+  }
+
+  @Delete('/author/:name')
+  async deleteAuthor(@Param('name') name: string) {
+    return this.authorService.deleteAuthor(name);
   }
 }

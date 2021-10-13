@@ -38,4 +38,25 @@ export class AuthorService {
 
     return author;
   }
+
+  async updateAuthor(authorName: string, name: string) {
+    const displayName = name;
+    name = name.replace(/ /g, '-').toLowerCase();
+
+    const existingAuthor = await this.findByName(name);
+
+    if (existingAuthor)
+      throw new BadRequestException('Esse autor já está cadastrado');
+    const author = await this.findByName(authorName);
+    Object.assign(author, { name, displayName });
+
+    return this.authorRepo.save(author);
+  }
+
+  async deleteAuthor(name: string) {
+    const author = await this.findByName(name);
+
+    if (!author) throw new BadRequestException('Esse autor não existe');
+    return this.authorRepo.remove(author);
+  }
 }
