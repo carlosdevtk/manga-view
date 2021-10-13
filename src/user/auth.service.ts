@@ -22,11 +22,10 @@ export class AuthService {
   }
 
   async getCurrentUser(jwt: string) {
-    if (!jwt) throw new UnauthorizedException('Faça o login para continuar');
-    const data = await this.jwtService.verifyAsync(jwt);
-    if (!data) {
+    if (!this.isValidJwt(jwt))
       throw new UnauthorizedException('Faça o login para continuar');
-    }
+
+    const data = await this.jwtService.verifyAsync(jwt);
     return this.userService.findByUsername(data);
   }
 
