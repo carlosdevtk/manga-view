@@ -12,7 +12,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { request, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { GuestGuard } from 'src/guards/guest.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
