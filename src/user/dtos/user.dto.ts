@@ -8,5 +8,8 @@ export class UserDto {
   username: string;
 
   @Expose()
+  role: string;
+
+  @Expose()
   token?: string;
 }
