@@ -40,6 +40,7 @@ export class UserController {
   }
 
   @Post('/auth/login')
+  @UseGuards(GuestGuard)
   @HttpCode(200)
   async loginUser(
     @Body() dto: LoginUserDto,
