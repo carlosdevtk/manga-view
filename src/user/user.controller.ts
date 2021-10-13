@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
   Req,
   Res,
@@ -17,6 +19,7 @@ import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dtos/createUser.dto';
 import { LoginUserDto } from './dtos/loginUser.dto';
+import { UpdateUserDto } from './dtos/updateUser.dto';
 import { UserDto } from './dtos/user.dto';
 import { UserService } from './user.service';
 
@@ -28,6 +31,12 @@ export class UserController {
     private authService: AuthService,
     private jwtService: JwtService,
   ) {}
+
+  @Get('/users')
+  @UseGuards(AuthGuard)
+  indexUsers() {
+    return this.userService.findAllUsers();
+  }
 
   @Post('/auth/register')
   @UseGuards(GuestGuard)
@@ -54,6 +63,7 @@ export class UserController {
   }
 
   @Post('/auth/logout')
+  @UseGuards(AuthGuard)
   @HttpCode(200)
   async logoutUser(@Res({ passthrough: true }) response: Response) {
     response.clearCookie('jwt');
@@ -69,5 +79,32 @@ export class UserController {
   async currentUser(@Req() request: Request) {
     const cookie = request.cookies['jwt'];
     return this.authService.getCurrentUser(cookie);
+  }
+
+  @Patch('/user/:username')
+  @UseGuards(AuthGuard)
+  async updateUser(
+    @Param('username') username: string,
+    @Req() request: Request,
+    @Body() attrs: UpdateUserDto,
+  ) {
+    const cookie = request.cookies['jwt'];
+    const user = await this.authService.getCurrentUser(cookie);
+
+    return this.userService.updateUser(username, user, attrs);
+  }
+
+  @Delete('/user/:username')
+  @UseGuards(AuthGuard)
+  async deleteUser(
+    @Param('username') username: string,
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const cookie = request.cookies['jwt'];
+    const user = await this.authService.getCurrentUser(cookie);
+    response.clearCookie('jwt');
+
+    return this.userService.deleteUser(username, user);
   }
 }
