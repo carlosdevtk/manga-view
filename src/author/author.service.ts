@@ -20,7 +20,7 @@ export class AuthorService {
     const existingAuthor = await this.findByName(name);
 
     if (existingAuthor)
-      throw new BadRequestException('Esse author já está cadastrado');
+      throw new BadRequestException('Esse autor já está cadastrado');
 
     const author = this.authorRepo.create({ name, displayName });
 
